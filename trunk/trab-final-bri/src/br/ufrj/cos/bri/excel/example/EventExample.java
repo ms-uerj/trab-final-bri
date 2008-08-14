@@ -1,4 +1,4 @@
-package br.ufrj.cos.bri.excel.test.example;
+package br.ufrj.cos.bri.excel.example;
 
 import java.io.FileInputStream;
 import java.io.IOException;
