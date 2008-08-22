@@ -17,6 +17,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
+import br.ufrj.cos.bri.util.db.mysql.MysqlConnector;
+
 public class QualisReader {
 
 	public final static String TABLE_QUALIS = "QUALIS";
@@ -31,6 +33,7 @@ public class QualisReader {
 	public QualisReader() {
 
 	}
+
 	/**
 	 * Imprime na saída do console o conteúdo da planilha
 	 */
@@ -63,25 +66,22 @@ public class QualisReader {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
 	 * Carrega para o banco de dados o conteúdo da planilha
 	 */
 	public void loadDatabase() {
-		try {
 
-			// TODO: Criar classe para criação da conexão, para que a mesma
-			// conexão possa ser compartilhada por toda aplicação
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost/bri", "root", "");
+		MysqlConnector conn = new MysqlConnector("bri", "root", "");
 
-			Statement stmt = con.createStatement();
+		List<String> rowValues = new ArrayList<String>();
 
-			List<String> rowValues = new ArrayList<String>();
+		POIFSFileSystem fs;
+		String sql;
 
-			POIFSFileSystem fs;
+		conn.connect();
+
+		if (conn.isConnected()) {
 			try {
 				fs = new POIFSFileSystem(new FileInputStream(file));
 				HSSFWorkbook wb = new HSSFWorkbook(fs);
@@ -95,15 +95,17 @@ public class QualisReader {
 						HSSFCell cell = cit.next();
 						rowValues.add(cell.toString());
 					}
-					stmt.executeUpdate("INSERT INTO "
-							+ QualisReader.TABLE_QUALIS + "("
+
+					sql = "INSERT INTO " + QualisReader.TABLE_QUALIS + "("
 							+ QualisReader.COLUMN_ISSN + ", "
 							+ QualisReader.COLUMN_TITULO + ", "
 							+ QualisReader.COLUMN_NIVEL + ", "
 							+ QualisReader.COLUMN_CIRCULACAO + ") VALUES('"
 							+ rowValues.get(0) + "', '" + rowValues.get(1)
 							+ "', '" + rowValues.get(2) + "', '"
-							+ rowValues.get(3) + "')");
+							+ rowValues.get(3) + "')";
+
+					conn.exec(sql);
 					rowValues.clear();
 
 				}
@@ -116,13 +118,8 @@ public class QualisReader {
 				e.printStackTrace();
 			}
 
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-	}
+		conn.disconnect();
 
+	}
 }
