@@ -16,98 +16,125 @@ DROP TABLE IF EXISTS MASTERTHESIS;
 DROP TABLE IF EXISTS PHDTHESIS;
 DROP TABLE IF EXISTS PROCEEDINGS;
 DROP TABLE IF EXISTS AUTHOR;
+DROP TABLE IF EXISTS ARTICLE_AUTHOR;
+DROP TABLE IF EXISTS INPROCEEDINGS_AUTHOR;
+DROP TABLE IF EXISTS INCOLLECTION_AUTHOR;
 
 --
 -- TABLE DEFINITION FOR USER
 --
 
+CREATE TABLE AUTHOR
+(
+id int unsigned not null auto_increment,
+name varchar(255) not null,,
+primary key (id),
+FULLTEXT (name)
+) engine=MyISAM;
+
 CREATE TABLE ARTICLE
 (
- key text,
- author_id int unsigned,
- title text,
- journal text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
+ id int unsigned not null auto_increment,
+ title varchar(255),
+ journal varchar(255),
+ year varchar(30),
+ primary key (id),
+ link varchar(255),
  FULLTEXT (title,journal,year)
 ) engine=MyISAM;
 
 CREATE TABLE BOOK
 (
- key text,
+ id int unsigned not null auto_increment,
  author_id int unsigned,
- editor text,
- publisher text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
- FULLTEXT (editor, title,publisher ,year)
-) engine=MyISAM;
-
-CREATE TABLE INPROCEDDINGS
-(
- key text,
- author_id int unsigned,
- title text,
- booktitle text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
- FULLTEXT (title,booktitle,year)
+ editor varchar(255),
+ publisher varchar(255),
+ year varchar(30),
+ primary key (id),
+ foreign key (author_id) references AUTHOR (id),
+ FULLTEXT (editor,publisher,year)
 ) engine=MyISAM;
 
 CREATE TABLE INCOLLECTION
 (
- key text,
- author_id int unsigned,
- title text,
- booktitle text,
- publisher text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
+ id int unsigned not null auto_increment,
+ id_book int unsigned,
+ title varchar(255),
+ booktitle varchar(255),
+ publisher varchar(255),
+ year varchar(30),
+ link varchar(255),
+ primary key (id),
+ foreign key (id_book) references BOOK (id),
  FULLTEXT (title,booktitle,publisher,year)
+) engine=MyISAM;
+
+CREATE TABLE PROCEEDINGS
+(
+ id int unsigned not null auto_increment,
+ title varchar(255),
+ year varchar(30),
+ primary key (id),
+ FULLTEXT (title,year)
+) engine=MyISAM;
+
+CREATE TABLE INPROCEEDINGS
+(
+ id int unsigned not null auto_increment,
+ id_proceedings int unsigned,
+ title varchar(255),
+ booktitle varchar(255),
+ year varchar(30),
+ link varchar(255),
+ primary key (id),
+ foreign key (id_proceedings) references PROCEEDINGS (id),
+ FULLTEXT (title,booktitle,year)
 ) engine=MyISAM;
 
 CREATE TABLE MASTERTHESIS
 (
- key text,
- author_id int unsigned,
- title text,
- school text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
+ id int unsigned not null auto_increment,
+ id_author int unsigned,
+ title varchar(255),
+ school varchar(255),
+ year varchar(30),
+ primary key (id),
+ foreign key (id_author) references AUTHOR (id),
  FULLTEXT (title,school ,year)
 ) engine=MyISAM;
 
 CREATE TABLE PHDTHESIS
 (
- key text,
- author_id int unsigned,
- title text,
- school text,
- year text,
- primary key (key),
- foreign key (query_id) references AUTHOR (id),
+ id int unsigned not null auto_increment,
+ id_author int unsigned,
+ title varchar(255),
+ school varchar(255),
+ year varchar(30),
+ primary key (id),
+ foreign key (id_author) references AUTHOR (id),
  FULLTEXT (title,school ,year)
 ) engine=MyISAM;
 
-CREATE TABLE PROCEEDINGS
-(
- key text,
- title text,
- year text,
- primary key (key),
- FULLTEXT (title,year)
+CREATE TABLE ARTICLE_AUTHOR (
+ id_article int unsigned not null,
+ id_author int unsigned not null,
+ position_author int unsigned,
+ foreign key (id_article) references T_ARTICLE (id),
+ foreign key (id_author) references T_AUTHOR (id)
 ) engine=MyISAM;
 
-CREATE TABLE AUTHOR
-(
-id int unsigned not null auto_increment,
-name text,
-primary key (id),
-FULLTEXT (author)
-); engine=MyISAM;
+CREATE TABLE INPROCEEDINGS_AUTHOR (
+ id_inproceedings int unsigned not null,
+ id_author int unsigned not null,
+ position_author int unsigned,
+ foreign key (id_inproceedings) references T_INPROCEEDINGS (id),
+ foreign key (id_author) references T_AUTHOR (id)
+) engine=MyISAM;
 
+CREATE TABLE INCOLLECTION_AUTHOR (
+ id_incollection int unsigned not null,
+ id_author int unsigned not null,
+ position_author int unsigned,
+ foreign key (id_incollection) references T_INCOLLECTION (id),
+ foreign key (id_author) references T_AUTHOR (id)
+) engine=MyISAM;
