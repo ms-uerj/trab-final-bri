@@ -1,9 +1,13 @@
 package br.ufrj.cos.bri.dblp;
 
+import java.io.InputStream;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+
+import br.ufrj.cos.bri.util.PDFParser;
 
 public class Extractor {
 
@@ -11,23 +15,29 @@ public class Extractor {
 	public String getDocument(String URL) throws Exception{
 		
 		if(URL.endsWith("pdf") || URL.endsWith("PDF")){
-			
+			InputStream pdfIS = getPDFFile(URL);
+			return PDFParser.getTextContent(pdfIS);			
 		}
 		else if (URL.contains("ieeexplore.ieee.org")){
-			
+			String pdfLink = getPDFLinkFromIEEE(URL);
+			InputStream pdfIS = getPDFFile(pdfLink);
+			return PDFParser.getTextContent(pdfIS);			
 		}
 		else if (URL.contains("portal.acm.org")){
-			
+			String pdfLink = getPDFLinkFromACM(URL);
+			InputStream pdfIS = getPDFFile(pdfLink);
+			return PDFParser.getTextContent(pdfIS);			
 		}
 		else if (URL.contains("www.springerlink.com")){
 			String pdfLink = getPDFLinkFromSpringer(URL);
-			byte[] pdf = getPDFFile(pdfLink);
+			InputStream pdfIS = getPDFFile(pdfLink);
+			return PDFParser.getTextContent(pdfIS);
 		}
 		
 		return null;
 	}
 	
-	public byte[] getPDFFile(String URL) throws Exception{
+	public InputStream getPDFFile(String URL) throws Exception{
 		
 	    // Cria uma instância de HttpClient.
 	    HttpClient client = new HttpClient();
@@ -41,7 +51,7 @@ public class Extractor {
 		  throw new Exception("URL:\n"+HttpStatus.getStatusText(statusCode));
 		}
 		
-		byte[] pdf = method.getResponseBody(); 
+		InputStream pdf = method.getResponseBodyAsStream(); 
 		
 		return pdf;
 		
