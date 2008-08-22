@@ -1,5 +1,5 @@
 
---drop database bri;
+drop database bri;
 create database bri;
 
 USE bri;
@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS INCOLLECTION_AUTHOR;
 CREATE TABLE AUTHOR
 (
 id int unsigned not null auto_increment,
-name varchar(255) not null,,
+name varchar(255) not null,
 primary key (id),
 FULLTEXT (name)
 ) engine=MyISAM;
