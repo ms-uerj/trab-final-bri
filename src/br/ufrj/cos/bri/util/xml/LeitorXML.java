@@ -6,12 +6,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import br.ufrj.cos.bri.dblp.model.Person;
-import br.ufrj.cos.bri.dblp.model.Publication;
+import br.ufrj.cos.bri.dblp.model.RegistroDBLP;
 import br.ufrj.cos.bri.model.InteressadoRegistro;
 import br.ufrj.cos.bri.model.Registro;
 import br.ufrj.cos.bri.model.RegistroBase;
@@ -34,20 +32,14 @@ public class LeitorXML extends DefaultHandler {
 	String localAbstract = new String();
 	String localQueryText = new String();
 	
-	/** PARSER DBLP */
-	private Locator locator;
-	private final int maxAuthorsPerPaper = 200;
-    private String Value;
-    private String key;
-    private String recordTag;
-    private Person[] persons= new Person[maxAuthorsPerPaper];
-    private int numberOfPersons = 0;
-
-    private boolean insidePerson;
+	/** PARSER DBLP */    
+    private boolean inInProceedings=false;
+    private RegistroDBLP registroDBLP=null;
 	
 	public LeitorXML(String arquivo) {
 		super();
 		this.arquivo = arquivo;
+		registroDBLP = new RegistroDBLP();		
 	}
 	
 	public void cadastrarInteressado(InteressadoRegistro i) {
@@ -64,11 +56,6 @@ public class LeitorXML extends DefaultHandler {
 			t.printStackTrace();
 		}
 	}
-	
-	public void setDocumentLocator(Locator locator) {
-        this.locator = locator;
-    }
-
 	
 	public void startElement (String uri, String localName, String qName, Attributes atts) {
 		String k;
@@ -104,15 +91,15 @@ public class LeitorXML extends DefaultHandler {
 		}
 		
 		/** PARSER DBLP */
-		else if (insidePerson = (qName.equals("author") || qName
-                .equals("editor"))) {
-            Value = "";
-            return;
-        }
-		else if ((atts.getLength()>0) && ((k = atts.getValue("key"))!=null)) {
-            key = k;
-            recordTag = qName;   
-        }
+		else if(qName.equals("inproceedings")) {
+			inInProceedings = true;
+			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.INPROCEEDINGS);
+			String key = atts.getValue("key");
+			String mdate = atts.getValue("mdate");
+			registroDBLP.setKey(key);
+			registroDBLP.setMdate(mdate);
+			registroDBLP.print();
+		}
 
 	}
 	
@@ -150,28 +137,9 @@ public class LeitorXML extends DefaultHandler {
 		}
 		
 		/** PARSER DBLP */
-		else if (qName.equals("author") || qName.equals("editor")) {
-
-            Person p;
-            if ((p = Person.searchPerson(Value)) == null) {
-                p = new Person(Value);
-            }
-            p.increment();
-            if (numberOfPersons<maxAuthorsPerPaper)
-                persons[numberOfPersons++] = p;
-            return;
-        }
-		else if (qName.equals(recordTag)) {
-            if (numberOfPersons == 0)
-                return;
-            Person pa[] = new Person[numberOfPersons];
-            for (int i=0; i<numberOfPersons; i++) {
-                pa[i] = persons[i];
-                persons[i] = null;
-            }
-            Publication p = new Publication(key,pa);
-            numberOfPersons = 0;
-        }
+		else if(qName.equals("inproceedings")) {
+			inInProceedings = false;
+		}
 
 	}
 	
@@ -199,11 +167,6 @@ public class LeitorXML extends DefaultHandler {
 		}
 		else if(inItemScore) {
 			((RegistroConsulta)registro).addRegistro(new Integer(Integer.parseInt(new String(ch,start,length).trim())));
-		}
-		
-		/** PARSER DBLP */
-		else if (insidePerson) {
-            Value += new String(ch, start, length);
 		}			
 	}
 	
