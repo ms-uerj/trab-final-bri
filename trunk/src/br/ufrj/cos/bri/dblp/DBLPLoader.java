@@ -50,5 +50,10 @@ public class DBLPLoader implements InteressadoRegistro {
 		*/
 	}
 	
+	public static void main(String[] args) {
+		DBLPLoader loader = new DBLPLoader();
+		loader.populaBase();
+	}
+	
 }
 
