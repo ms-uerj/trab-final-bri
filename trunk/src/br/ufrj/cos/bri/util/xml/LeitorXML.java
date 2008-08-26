@@ -11,9 +11,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import br.ufrj.cos.bri.dblp.model.RegistroDBLP;
 import br.ufrj.cos.bri.model.InteressadoRegistro;
-import br.ufrj.cos.bri.model.Registro;
-import br.ufrj.cos.bri.model.RegistroBase;
-import br.ufrj.cos.bri.model.RegistroConsulta;
 
 public class LeitorXML extends DefaultHandler {
 	private String arquivo = null;
