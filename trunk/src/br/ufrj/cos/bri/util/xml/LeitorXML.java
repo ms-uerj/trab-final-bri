@@ -31,6 +31,7 @@ public class LeitorXML extends DefaultHandler {
     private boolean inBookTitle=false;
     private boolean inYear=false;
     private boolean inLink=false;
+    private boolean inAuthor=false;
     private RegistroDBLP registroDBLP=null;
 	
 	public LeitorXML(String arquivo) {
@@ -77,6 +78,9 @@ public class LeitorXML extends DefaultHandler {
 		else if(qName.equals("url") && inInProceedings) {
 			inLink = true;
 		}
+		else if(qName.equals("author") && inInProceedings) {
+			inAuthor = true;
+		}
 
 	}
 	
@@ -102,6 +106,9 @@ public class LeitorXML extends DefaultHandler {
 		else if(qName.equals("url")) {
 			inLink = false;
 		}
+		else if(qName.equals("author")) {
+			inAuthor = false;
+		}
 
 	}
 	
@@ -122,6 +129,9 @@ public class LeitorXML extends DefaultHandler {
 		else if(inLink) {
 			localLink += new String(ch,start,length);
 			registroDBLP.setLink(localLink);
+		}
+		else if(inAuthor) {
+			registroDBLP.addAuthor(new String(ch,start,length));
 		}
 		
 	}

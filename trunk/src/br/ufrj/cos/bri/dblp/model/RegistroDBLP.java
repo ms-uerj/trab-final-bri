@@ -1,5 +1,7 @@
 package br.ufrj.cos.bri.dblp.model;
 
+import java.util.Vector;
+
 import br.ufrj.cos.bri.model.Registro;
 
 public class RegistroDBLP extends Registro {
@@ -9,7 +11,7 @@ public class RegistroDBLP extends Registro {
 	/** COMMON */
 	private String key;
 	private String mdate;
-	private String author;
+	private Vector<String> author;
 	private String editor;
 	private String title;
 	private String year;
@@ -25,6 +27,7 @@ public class RegistroDBLP extends Registro {
 	
 	public void setDataType(DBLP_DATA type) {
 		current = type;
+		author = new Vector<String>();
 	}
 	
 	public DBLP_DATA getDataType() {
@@ -49,12 +52,11 @@ public class RegistroDBLP extends Registro {
 		return mdate;
 	}
 	
-	public void setAuthor(String a) {
-		author = a;
-		author = author.replaceAll("'", "");
+	public void addAuthor(String a) {
+		author.add(a.replaceAll("'", ""));
 	}
 	
-	public String getAuthor() {
+	public Vector<String> getAuthors() {
 		return author;
 	}
 	
