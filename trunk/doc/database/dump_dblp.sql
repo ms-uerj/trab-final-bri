@@ -38,9 +38,10 @@ CREATE TABLE ARTICLE
  title varchar(255),
  journal varchar(255),
  year varchar(30),
+ content text,
  primary key (id),
  link varchar(255),
- FULLTEXT (title,journal,year)
+ FULLTEXT (title,journal,year,content)
 ) engine=MyISAM;
 
 CREATE TABLE BOOK
