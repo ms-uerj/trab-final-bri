@@ -1,8 +1,5 @@
 package br.ufrj.cos.bri.excel.test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 import br.ufrj.cos.bri.excel.QualisReader;
 
 public class LoadQualis {
