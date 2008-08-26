@@ -21,6 +21,7 @@ public class LeitorXML extends DefaultHandler {
 	private String localBookTitle = new String();
 	private String localYear = new String();
 	private String localLink = new String();
+	private String localAuthor = new String();
 	
 	/** PARSER DBLP */
 	private boolean inTitle=false;
@@ -72,7 +73,7 @@ public class LeitorXML extends DefaultHandler {
 		else if(qName.equals("year") && inInProceedings) {
 			inYear = true;
 		}
-		else if(qName.equals("url") && inInProceedings) {
+		else if(qName.equals("ee") && inInProceedings) {
 			inLink = true;
 		}
 		else if(qName.equals("author") && inInProceedings) {
@@ -90,6 +91,8 @@ public class LeitorXML extends DefaultHandler {
 			localLink="";
 			localTitle="";
 			localYear="";
+			
+			
 		}
 		else if(qName.equals("title")) {
 			inTitle = false;
@@ -100,11 +103,13 @@ public class LeitorXML extends DefaultHandler {
 		else if(qName.equals("year")) {
 			inYear = false;
 		}
-		else if(qName.equals("url")) {
+		else if(qName.equals("ee")) {
 			inLink = false;
 		}
-		else if(qName.equals("author")) {
+		else if(qName.equals("author") && inAuthor) {
 			inAuthor = false;
+			registroDBLP.addAuthor(localAuthor);
+			localAuthor="";
 		}
 
 	}
@@ -128,7 +133,8 @@ public class LeitorXML extends DefaultHandler {
 			registroDBLP.setLink(localLink);
 		}
 		else if(inAuthor) {
-			registroDBLP.addAuthor(new String(ch,start,length));
+			localAuthor += new String(ch,start,length);
+			
 		}
 		
 	}
