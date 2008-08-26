@@ -81,7 +81,7 @@ CREATE TABLE PROCEEDINGS
 CREATE TABLE INPROCEEDINGS
 (
  id int unsigned not null auto_increment,
- id_proceedings int unsigned,
+ id_proceedings varchar(255),
  title varchar(255),
  booktitle varchar(255),
  year varchar(30),

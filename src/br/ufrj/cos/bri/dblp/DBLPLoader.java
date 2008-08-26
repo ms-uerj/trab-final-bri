@@ -15,6 +15,7 @@ public class DBLPLoader implements InteressadoRegistro {
 	private int contador=0;
 		
 	public DBLPLoader() {
+		System.setProperty("entityExpansionLimit", "10000000");
 		xml_docs = new Vector<String>();
 		xml_docs.add("input/dblp.xml");
 				
@@ -37,9 +38,13 @@ public class DBLPLoader implements InteressadoRegistro {
 	public void terminoLeitura() {}
 	
 	private void gravaRegistro(RegistroDBLP registro) {
-		/*  REFAZER
-		String query = new String("INSERT INTO repository (recordnum, title, abstract, bodyXml) VALUES ("+
-				registro.pegaRecordNum()+",\'"+registro.pegaTitulo()+"\',\'"+registro.pegaAbstract()+"\',\'"+registro.pegaCorpoXML()+"\');");
+		
+		String query = null;
+		
+		if(registro.getDataType() == RegistroDBLP.DBLP_DATA.INPROCEEDINGS) {
+			query = new String("INSERT INTO inproceedings (id_proceedings, title, booktitle, year, link) VALUES ("+
+					"\'"+registro.getKey()+"\'"+",\'"+registro.getTitle()+"\',\'"+registro.getBookTitle()+"\',\'"+registro.getYear()+"\',\'"+registro.getLink()+"\');");
+		}
 		
 		
 		//System.out.println(query);
@@ -47,12 +52,14 @@ public class DBLPLoader implements InteressadoRegistro {
 		System.out.print("Registros: "+ ++contador+"\r");
 		
 		db.exec(query);
-		*/
+		
 	}
 	
 	public static void main(String[] args) {
+		System.out.println("Inicializando extração e carga ...");
 		DBLPLoader loader = new DBLPLoader();
 		loader.populaBase();
+		System.out.println("Fim da carga.");
 	}
 	
 }

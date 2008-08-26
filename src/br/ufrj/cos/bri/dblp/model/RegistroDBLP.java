@@ -12,6 +12,9 @@ public class RegistroDBLP extends Registro {
 	private String author;
 	private String editor;
 	private String title;
+	private String year;
+	private String booktitle;
+	private String link;
 	
 	public void print() {
 		System.out.println("[TYPE="+current.toString()+", "+
@@ -30,6 +33,7 @@ public class RegistroDBLP extends Registro {
 	
 	public void setKey(String k) {
 		key = k;
+		key = key.replaceAll("'", "");
 	}
 	
 	public String getKey() {
@@ -38,6 +42,7 @@ public class RegistroDBLP extends Registro {
 	
 	public void setMdate(String m) {
 		mdate = m;
+		mdate = mdate.replaceAll("'", "");
 	}
 	
 	public String getMdate() {
@@ -46,6 +51,7 @@ public class RegistroDBLP extends Registro {
 	
 	public void setAuthor(String a) {
 		author = a;
+		author = author.replaceAll("'", "");
 	}
 	
 	public String getAuthor() {
@@ -54,6 +60,7 @@ public class RegistroDBLP extends Registro {
 	
 	public void setEditor(String e) {
 		editor = e;
+		editor = editor.replaceAll("'", "");
 	}
 	
 	public String getEditor() {
@@ -62,10 +69,36 @@ public class RegistroDBLP extends Registro {
 	
 	public void setTitle(String t) {
 		title = t;
+		title = title.replaceAll("'", "");
 	}
 	
 	public String getTitle() {
 		return title;
 	}
 	
+	public void setBookTitle(String t) {
+		booktitle = t;
+		booktitle = booktitle.replaceAll("'", "");
+	}
+	
+	public String getBookTitle() {
+		return booktitle;
+	}
+	
+	public void setYear(String t) {
+		year = t;
+	}
+	
+	public String getYear() {
+		return year;
+	}
+	
+	public void setLink(String t) {
+		link = t;
+		link = link.replaceAll("'", "");
+	}
+	
+	public String getLink() {
+		return link;
+	}
 }
