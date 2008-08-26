@@ -68,8 +68,8 @@ public class TextPreprocessing {
 	 * @param source - the input set of words
 	 * @return the content of that set of words, now stemmed
 	 */
-	public List<String> applyPorterStemmer(List<String> source) {
-		List<String> result = new Vector<String>();
+	public String applyPorterStemmer(List<String> source) {
+		StringBuffer result = new StringBuffer();
 		Stemmer stemmer = new Stemmer();
 
 		for (int i = 0; i < source.size(); i++) {
@@ -87,9 +87,9 @@ public class TextPreprocessing {
 			// converting the stemming result (an array of char) to string
 			String resultString = stemmer.toString();
 			// adding to the result string, reversing the lower-case conversion
-			result.add(resultString.toUpperCase());
+			result.append(resultString +" ");
 		}
-		return result;
+		return result.toString();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class TextPreprocessing {
 	 * @param sourceText - the text to be preprocessed 
 	 * @return the terms obtained by text preprocessing
 	 */
-	public static List<String> preProcessText(String sourceText) {
+	public static String preProcessText(String sourceText) {
 		TextPreprocessing textProcessor = new TextPreprocessing();
 		textProcessor.loadListOfStopWords("resources/stopwords/english.stopwords.txt");
 		if (sourceText == null) {
@@ -137,7 +137,7 @@ public class TextPreprocessing {
 		String tempText = sourceText.toUpperCase();
 		tempText = textProcessor.removeNonLetterCharacters(tempText);			
 		List<String> tempListofTerms = textProcessor.removeStopWords(tempText);
-		List<String> listOfTerms = textProcessor.applyPorterStemmer(tempListofTerms);
+		String listOfTerms = textProcessor.applyPorterStemmer(tempListofTerms);
 		
 		return listOfTerms;
 	}

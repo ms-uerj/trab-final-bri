@@ -29,11 +29,10 @@ public class TestTextProcessing {
 			System.out.println(term);
 		}
 		
-		List<String> resultingListOfTerms = textProcessor.applyPorterStemmer(temporaryListOfTerms);
+		String resultingListOfTerms = textProcessor.applyPorterStemmer(temporaryListOfTerms);
 		
 		System.out.println("After Porter stemming:");
-		for (Iterator<String> iterator = resultingListOfTerms.iterator(); iterator.hasNext();) {
-			String term = (String) iterator.next();
+		for (String term: resultingListOfTerms.split(" ")) {
 			System.out.println(term);
 		}
 	}

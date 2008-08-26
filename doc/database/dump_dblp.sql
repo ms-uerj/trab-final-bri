@@ -63,10 +63,11 @@ CREATE TABLE INCOLLECTION
  booktitle varchar(255),
  publisher varchar(255),
  year varchar(30),
+ content text,
  link varchar(255),
  primary key (id),
  foreign key (id_book) references BOOK (id),
- FULLTEXT (title,booktitle,publisher,year)
+ FULLTEXT (title,booktitle,publisher,year, content)
 ) engine=MyISAM;
 
 CREATE TABLE PROCEEDINGS
@@ -74,6 +75,7 @@ CREATE TABLE PROCEEDINGS
  id int unsigned not null auto_increment,
  title varchar(255),
  year varchar(30),
+ qualis char(3) default '',
  primary key (id),
  FULLTEXT (title,year)
 ) engine=MyISAM;
@@ -85,10 +87,11 @@ CREATE TABLE INPROCEEDINGS
  title varchar(255),
  booktitle varchar(255),
  year varchar(30),
+ content text,
  link varchar(255),
  primary key (id),
  foreign key (id_proceedings) references PROCEEDINGS (id),
- FULLTEXT (title,booktitle,year)
+ FULLTEXT (title,booktitle,year,content)
 ) engine=MyISAM;
 
 CREATE TABLE MASTERTHESIS
