@@ -1,12 +1,12 @@
 package br.ufrj.cos.bri;
 
+import java.sql.ResultSet;
+
 import br.ufrj.cos.bri.dblp.DBLPLoader;
 import br.ufrj.cos.bri.dblp.Extractor;
 import br.ufrj.cos.bri.excel.QualisReader;
 import br.ufrj.cos.bri.util.db.mysql.MysqlConnector;
 import br.ufrj.cos.bri.util.text.TextPreprocessing;
-
-import com.mysql.jdbc.ResultSet;
 
 public class Main {
 	
