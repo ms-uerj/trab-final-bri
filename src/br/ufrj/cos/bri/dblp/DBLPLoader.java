@@ -1,6 +1,10 @@
 package br.ufrj.cos.bri.dblp;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.Properties;
 import java.util.Vector;
 
 import br.ufrj.cos.bri.dblp.model.RegistroDBLP;
@@ -18,8 +22,13 @@ public class DBLPLoader implements InteressadoRegistro {
 		System.setProperty("entityExpansionLimit", "10000000");
 		xml_docs = new Vector<String>();
 		xml_docs.add("input/dblp.xml");
-				
-		db = new MysqlConnector("bri", "rcepeda", "123456");
+
+		Properties props = new Properties();
+		try {
+			props.load(new FileInputStream("INF/INF.properties"));
+		} catch (Exception e) {e.printStackTrace();}
+		
+		db = new MysqlConnector();
 		db.connect();
 	}
 	
