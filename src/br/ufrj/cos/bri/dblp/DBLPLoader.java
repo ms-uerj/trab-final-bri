@@ -1,11 +1,11 @@
 package br.ufrj.cos.bri.dblp;
 
+import java.sql.ResultSet;
 import java.util.Vector;
 
 import br.ufrj.cos.bri.dblp.model.RegistroDBLP;
 import br.ufrj.cos.bri.model.InteressadoRegistro;
 import br.ufrj.cos.bri.model.Registro;
-import br.ufrj.cos.bri.model.RegistroBase;
 import br.ufrj.cos.bri.util.db.mysql.MysqlConnector;
 import br.ufrj.cos.bri.util.xml.LeitorXML;
 
@@ -41,9 +41,24 @@ public class DBLPLoader implements InteressadoRegistro {
 		
 		String query = null;
 		
+		Vector<String> authors = registro.getAuthors();
+		
 		if(registro.getDataType() == RegistroDBLP.DBLP_DATA.INPROCEEDINGS) {
+			query = new String("INSERT INTO proceedings (title, year) VALUES ("+
+					"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\');");
+			
+			db.exec(query);
+			
+			query = new String("SELECT LAST_INSERT_ID()");
+			
+			ResultSet set = db.query(query);
+			
+			//int id = set.getInt("id");
+			
 			query = new String("INSERT INTO inproceedings (id_proceedings, title, booktitle, year, link) VALUES ("+
 					"\'"+registro.getKey()+"\'"+",\'"+registro.getTitle()+"\',\'"+registro.getBookTitle()+"\',\'"+registro.getYear()+"\',\'"+registro.getLink()+"\');");
+			
+			db.exec(query);
 		}
 		
 		
@@ -51,7 +66,7 @@ public class DBLPLoader implements InteressadoRegistro {
 		
 		System.out.print("Registros: "+ ++contador+"\r");
 		
-		db.exec(query);
+		
 		
 	}
 	
