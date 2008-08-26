@@ -72,7 +72,7 @@ public class QualisReader {
 	 */
 	public void loadDatabase() {
 
-		MysqlConnector conn = new MysqlConnector("bri", "root", "");
+		MysqlConnector conn = new MysqlConnector();
 
 		List<String> rowValues = new ArrayList<String>();
 

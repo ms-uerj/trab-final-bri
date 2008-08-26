@@ -1,10 +1,12 @@
 package br.ufrj.cos.bri.util.db.mysql;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 public class MysqlConnector {
 	private String url = null;
@@ -17,6 +19,19 @@ public class MysqlConnector {
 		this.passwd = passwd;
 		
 		this.url = new String("jdbc:mysql://localhost:3306/")+database;
+		
+	}
+	
+	public MysqlConnector() {
+		
+		Properties props = new Properties();
+		try {
+			props.load(new FileInputStream("INF/INF.properties"));
+		} catch (Exception e) {e.printStackTrace();}
+		
+		this.user = props.getProperty("db.username");
+		this.passwd = props.getProperty("db.password");
+		this.url = props.getProperty("db.address");
 		
 	}
 	

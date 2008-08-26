@@ -7,12 +7,11 @@ import br.ufrj.cos.bri.util.text.TextPreprocessing;
 
 public class PaperContentLoader {
 	private MysqlConnector db = null;
-	private int contador=0;
 	private Extractor articleDocumentExtractor;
 		
 	public PaperContentLoader() {
 		articleDocumentExtractor = new Extractor();
-		db = new MysqlConnector("bri", "root", "");
+		db = new MysqlConnector();
 		db.connect();
 	}
 	
