@@ -1,9 +1,8 @@
 package br.ufrj.cos.bri.dblp;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -48,28 +47,12 @@ public class DBLPLoader implements InteressadoRegistro {
 	
 	private void gravaRegistro(RegistroDBLP registro) {
 		
-		String query = null;
-		
-		Vector<String> authors = registro.getAuthors();
+		Vector<Integer> idsAuthor = gravaRegistroAuthor(registro);
 		
 		if(registro.getDataType() == RegistroDBLP.DBLP_DATA.INPROCEEDINGS) {
-			query = new String("INSERT INTO proceedings (title, year) VALUES ("+
-					"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\');");
-			
-			db.exec(query);
-			
-			query = new String("SELECT LAST_INSERT_ID()");
-			
-			ResultSet set = db.query(query);
-			
-			//int id = set.getInt("id");
-			
-			query = new String("INSERT INTO inproceedings (id_proceedings, title, booktitle, year, link) VALUES ("+
-					"\'"+registro.getKey()+"\'"+",\'"+registro.getTitle()+"\',\'"+registro.getBookTitle()+"\',\'"+registro.getYear()+"\',\'"+registro.getLink()+"\');");
-			
-			db.exec(query);
+			int id = gravaRegistroInProceedings(registro);
+			gravaRegistroInProceedingsAuthor(id, idsAuthor);
 		}
-		
 		
 		//System.out.println(query);
 		
@@ -77,6 +60,98 @@ public class DBLPLoader implements InteressadoRegistro {
 		
 		
 		
+	}
+	
+	private int gravaRegistroInProceedings(RegistroDBLP registro) {
+		
+		String query = new String("SELECT id FROM proceedings WHERE title="+"\'"+registro.getTitle()+"\'");
+		
+		ResultSet set = db.query(query);
+		
+		int idproceedings=0;
+		try {
+			if(set.next()) {
+				idproceedings = set.getInt("id");
+			}
+			else {
+				query = new String("INSERT INTO proceedings (title, year) VALUES ("+
+						"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\');");
+				
+				db.exec(query);
+				
+				query = new String("SELECT LAST_INSERT_ID() as id");
+				
+				ResultSet newset = db.query(query);
+				newset.next();
+				idproceedings = newset.getInt("id");
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		query = new String("INSERT INTO inproceedings (id_proceedings, title, booktitle, year, link) VALUES ("+
+				"\'"+idproceedings+"\'"+",\'"+registro.getTitle()+"\',\'"+registro.getBookTitle()+"\',\'"+registro.getYear()+"\',\'"+registro.getLink()+"\');");
+		
+		db.exec(query);
+		
+		query = new String("SELECT LAST_INSERT_ID() as id");
+		
+		ResultSet setInProceedingsID = db.query(query);
+		
+		int idinproceedings=0;
+		try {
+			setInProceedingsID.next();
+			idinproceedings = setInProceedingsID.getInt("id");
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return idinproceedings;
+	}
+	
+	private Vector<Integer> gravaRegistroAuthor(RegistroDBLP registro) {
+		Vector<Integer> ids = new Vector<Integer>();
+		Vector<String> authors = registro.getAuthors();
+		
+		for(String author : authors) {
+			String query = new String("SELECT id FROM author WHERE name="+"\'"+author+"\'");
+			
+			ResultSet set = db.query(query);
+			
+			int idauthor=0;
+			try {
+				if(set.next()) {
+					idauthor = set.getInt("id");
+					ids.add(Integer.valueOf(idauthor));
+				}
+				else {
+					query = new String("INSERT INTO author (name) VALUES ("+
+							"\'"+author+"\');");
+					
+					db.exec(query);
+					
+					query = new String("SELECT LAST_INSERT_ID() as id");
+					
+					ResultSet newset = db.query(query);
+					newset.next();
+					idauthor = newset.getInt("id");
+					ids.add(Integer.valueOf(idauthor));
+				}
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return ids;
+	}
+	
+	private void gravaRegistroInProceedingsAuthor(int idinproceedings, Vector<Integer> idsauthor) {
+		for(int i=0;i < idsauthor.size();i++) {
+			String query = new String("INSERT INTO inproceedings_author (id_inproceedings,id_author,position_author) VALUES ("+
+					"\'"+idinproceedings+"\'"+",\'"+idsauthor.elementAt(i).toString()+"\',\'"+(i+1)+"\');");
+			
+			db.exec(query);
+		}
 	}
 	
 	public static void main(String[] args) {
