@@ -20,9 +20,9 @@ public class QualisReader {
 	public final static String TABLE_QUALIS = "QUALIS";
 
 	public final static String COLUMN_ISSN = "issn";
-	public final static String COLUMN_TITULO = "titulo";
-	public final static String COLUMN_NIVEL = "nivel";
-	public final static String COLUMN_CIRCULACAO = "circulacao";
+	public final static String COLUMN_TITULO = "title";
+	public final static String COLUMN_NIVEL = "qualis";
+	public final static String COLUMN_CIRCULACAO = "circulation";
 
 	private String file = "input/Periodicos_Qualis_02.xls";
 
