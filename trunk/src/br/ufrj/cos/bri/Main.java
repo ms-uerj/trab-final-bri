@@ -20,6 +20,11 @@ public class Main {
 			loader.populaBase();
 			System.out.println("Fim da carga.");
 			
+			System.out.println("Inicializando extração e carga da planilha Qualis...");
+			QualisReader qualisReader = new QualisReader();
+			qualisReader.loadDatabase();
+			System.out.println("Fim da carga da planilha Qualis.");
+			
 			System.out.println("Inicializando extração dos pdfs dos artigos e carga no banco DBLP...");
 	
 			PaperContentLoader paperContentLoader = new PaperContentLoader();
@@ -35,7 +40,6 @@ public class Main {
 				int id = result.getInt(1);
 				String ProceedingsName = result.getString(2);
 				
-				QualisReader qualisReader = new QualisReader();
 				String qualisLevel = qualisReader.getQualis(ProceedingsName);
 				
 				mysqlCon.exec("UPDATE PROCEEDINGS SET qualis='"+qualisLevel+"' WHERE id="+id);
