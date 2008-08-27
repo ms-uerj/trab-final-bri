@@ -130,7 +130,7 @@ public class TextPreprocessing {
 	 */
 	public static String preProcessText(String sourceText) {
 		TextPreprocessing textProcessor = new TextPreprocessing();
-		textProcessor.loadListOfStopWords("resources/stopwords/english.stopwords.txt");
+		textProcessor.loadListOfStopWords("input/english.stopwords.txt");
 		if (sourceText == null) {
 			sourceText = "";
 		}
