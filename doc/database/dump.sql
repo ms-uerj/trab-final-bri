@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS ARTICLE_AUTHOR;
 DROP TABLE IF EXISTS INPROCEEDINGS_AUTHOR;
 DROP TABLE IF EXISTS INCOLLECTION_AUTHOR;
 
+DROP TABLE IF EXISTS QUALIS;
+
 --
 -- TABLE DEFINITION FOR USER
 --
@@ -142,3 +144,12 @@ CREATE TABLE INCOLLECTION_AUTHOR (
  foreign key (id_incollection) references T_INCOLLECTION (id),
  foreign key (id_author) references T_AUTHOR (id)
 ) engine=MyISAM;
+
+CREATE TABLE QUALIS (
+  id int unsigned not null auto_increment,
+  issn text,
+  title text,
+  qualis text,
+  circulation text,
+  primary key (id)
+);
