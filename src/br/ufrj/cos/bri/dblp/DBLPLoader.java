@@ -53,10 +53,17 @@ public class DBLPLoader implements InteressadoRegistro {
 			int id = gravaRegistroInProceedings(registro);
 			gravaRegistroInProceedingsAuthor(id, idsAuthor);
 		}
+		else if(registro.getDataType() == RegistroDBLP.DBLP_DATA.ARTICLE) {
+			int id = gravaRegistroArticle(registro);
+			gravaRegistroArticleAuthor(id, idsAuthor);
+		}
+		else if(registro.getDataType() == RegistroDBLP.DBLP_DATA.PROCEEDINGS) {
+			int id = gravaRegistroProceedings(registro);
+		}
 		
 		//System.out.println(query);
 		
-		System.out.print("Registros: "+ ++contador+"\r");
+		//System.out.print("Registros: "+ ++contador+"\r");
 		
 		
 		
@@ -109,6 +116,50 @@ public class DBLPLoader implements InteressadoRegistro {
 		return idinproceedings;
 	}
 	
+	private int gravaRegistroArticle(RegistroDBLP registro) {
+		
+		String query = new String("INSERT INTO article (title, journal, year, link) VALUES ("+
+				"\'"+registro.getTitle()+"\',\'"+registro.getJournal()+"\',\'"+registro.getYear()+"\',\'"+registro.getLink()+"\');");
+		
+		db.exec(query);
+		
+		query = new String("SELECT LAST_INSERT_ID() as id");
+		
+		ResultSet setArticleID = db.query(query);
+		
+		int idarticle=0;
+		try {
+			setArticleID.next();
+			idarticle = setArticleID.getInt("id");
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return idarticle;
+	}
+	
+	private int gravaRegistroProceedings(RegistroDBLP registro) {
+		
+		String query = new String("INSERT INTO proceedings (title, year) VALUES ("+
+				"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\');");
+		
+		db.exec(query);
+		
+		query = new String("SELECT LAST_INSERT_ID() as id");
+		
+		ResultSet setProceedingsID = db.query(query);
+		
+		int idproceedings=0;
+		try {
+			setProceedingsID.next();
+			idproceedings = setProceedingsID.getInt("id");
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return idproceedings;
+	}
+	
 	private Vector<Integer> gravaRegistroAuthor(RegistroDBLP registro) {
 		Vector<Integer> ids = new Vector<Integer>();
 		Vector<String> authors = registro.getAuthors();
@@ -149,6 +200,15 @@ public class DBLPLoader implements InteressadoRegistro {
 		for(int i=0;i < idsauthor.size();i++) {
 			String query = new String("INSERT INTO inproceedings_author (id_inproceedings,id_author,position_author) VALUES ("+
 					"\'"+idinproceedings+"\'"+",\'"+idsauthor.elementAt(i).toString()+"\',\'"+(i+1)+"\');");
+			
+			db.exec(query);
+		}
+	}
+	
+	private void gravaRegistroArticleAuthor(int idarticle, Vector<Integer> idsauthor) {
+		for(int i=0;i < idsauthor.size();i++) {
+			String query = new String("INSERT INTO article_author (id_article,id_author,position_author) VALUES ("+
+					"\'"+idarticle+"\'"+",\'"+idsauthor.elementAt(i).toString()+"\',\'"+(i+1)+"\');");
 			
 			db.exec(query);
 		}

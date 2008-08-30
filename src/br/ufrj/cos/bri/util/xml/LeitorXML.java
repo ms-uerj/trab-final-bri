@@ -22,6 +22,7 @@ public class LeitorXML extends DefaultHandler {
 	private String localYear = new String();
 	private String localLink = new String();
 	private String localAuthor = new String();
+	private String localJournal = new String();
 	
 	/** PARSER DBLP */
 	private boolean inTitle=false;
@@ -30,6 +31,9 @@ public class LeitorXML extends DefaultHandler {
     private boolean inYear=false;
     private boolean inLink=false;
     private boolean inAuthor=false;
+    private boolean inArticle=false;
+    private boolean inJournal=false;
+    private boolean inProceedings=false;
     private RegistroDBLP registroDBLP=null;
 	
 	public LeitorXML(String arquivo) {
@@ -55,67 +59,93 @@ public class LeitorXML extends DefaultHandler {
 	
 	public void startElement (String uri, String localName, String qName, Attributes atts) {
 		
-		if(qName.equals("inproceedings")) {
-			inInProceedings = true;
-			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.INPROCEEDINGS);
+//		if(qName.equals("inproceedings")) {
+//			inInProceedings = true;
+//			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.INPROCEEDINGS);
+//			String key = atts.getValue("key");
+//			String mdate = atts.getValue("mdate");
+//			registroDBLP.setKey(key);
+//			registroDBLP.setMdate(mdate);
+//		}
+		if(qName.equals("article")) {
+			inArticle=true;
+			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.ARTICLE);
 			String key = atts.getValue("key");
 			String mdate = atts.getValue("mdate");
 			registroDBLP.setKey(key);
 			registroDBLP.setMdate(mdate);
-			//registroDBLP.print();
 		}
-		else if(qName.equals("title") && inInProceedings) {
+//		if(qName.equals("proceedings")) {
+//			inProceedings=true;
+//			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.PROCEEDINGS);
+//			String key = atts.getValue("key");
+//			String mdate = atts.getValue("mdate");
+//			registroDBLP.setKey(key);
+//			registroDBLP.setMdate(mdate);
+//		}
+		else if(qName.equals("title") && (inInProceedings||inArticle||inProceedings)) {
 			inTitle = true;
 		}
-		else if(qName.equals("booktitle") && inInProceedings) {
+		else if(qName.equals("booktitle") && (inInProceedings||inArticle||inProceedings)) {
 			inBookTitle = true;
 		}
-		else if(qName.equals("year") && inInProceedings) {
+		else if(qName.equals("year") && (inInProceedings||inArticle||inProceedings)) {
 			inYear = true;
 		}
-		else if(qName.equals("ee") && inInProceedings) {
+		else if(qName.equals("ee") && (inInProceedings||inArticle||inProceedings)) {
 			inLink = true;
 		}
-		else if(qName.equals("author") && inInProceedings) {
+		else if(qName.equals("author") && (inInProceedings||inArticle||inProceedings)) {
 			inAuthor = true;
 		}
-
+		else if(qName.equals("journal") && (inInProceedings||inArticle||inProceedings)) {
+			inJournal = true;
+		}
 	}
 	
 	public void endElement (String uri, String localName, String qName) throws SAXException {
 		
-		if(qName.equals("inproceedings")) {
+		if(qName.equals("inproceedings") && inInProceedings) {
 			inInProceedings = false;
 			interessado.receberRegistro(registroDBLP);
-			localBookTitle="";
-			localLink="";
-			localTitle="";
-			localYear="";
-			
-			
 		}
-		else if(qName.equals("title")) {
+		else if(qName.equals("article") && inArticle) {
+			inArticle = false;
+			interessado.receberRegistro(registroDBLP);
+		}
+		else if(qName.equals("proceedings") && inProceedings) {
+			inProceedings = false;
+			interessado.receberRegistro(registroDBLP);
+		}
+		else if(qName.equals("title") && inTitle) {
 			inTitle = false;
+			localTitle="";
 		}
-		else if(qName.equals("booktitle")) {
+		else if(qName.equals("booktitle") && inBookTitle) {
 			inBookTitle = false;
+			localBookTitle="";
 		}
-		else if(qName.equals("year")) {
+		else if(qName.equals("year") && inYear) {
 			inYear = false;
+			localYear="";
 		}
-		else if(qName.equals("ee")) {
+		else if(qName.equals("ee") && inLink) {
 			inLink = false;
+			localLink="";
 		}
 		else if(qName.equals("author") && inAuthor) {
 			inAuthor = false;
 			registroDBLP.addAuthor(localAuthor);
 			localAuthor="";
 		}
+		else if(qName.equals("journal") && inJournal) {
+			inJournal = false;
+			localJournal="";
+		}
 
 	}
 	
 	public void characters (char[] ch, int start, int length) throws SAXException {
-		
 		if(inTitle) {
 			localTitle += new String(ch,start,length);
 			registroDBLP.setTitle(localTitle);
@@ -135,6 +165,10 @@ public class LeitorXML extends DefaultHandler {
 		else if(inAuthor) {
 			localAuthor += new String(ch,start,length);
 			
+		}
+		else if(inJournal) {
+			localJournal += new String(ch,start,length);
+			registroDBLP.setJournal(localJournal);
 		}
 		
 	}
