@@ -5,7 +5,7 @@ import java.util.Vector;
 import br.ufrj.cos.bri.model.Registro;
 
 public class RegistroDBLP extends Registro {
-	public enum DBLP_DATA {INPROCEEDINGS, ARTICLE};
+	public enum DBLP_DATA {INPROCEEDINGS, ARTICLE, PROCEEDINGS};
 	private DBLP_DATA current;
 	
 	/** COMMON */
@@ -17,6 +17,7 @@ public class RegistroDBLP extends Registro {
 	private String year;
 	private String booktitle;
 	private String link;
+	private String journal;
 	
 	public void print() {
 		System.out.println("[TYPE="+current.toString()+", "+
@@ -102,5 +103,14 @@ public class RegistroDBLP extends Registro {
 	
 	public String getLink() {
 		return link;
+	}
+	
+	public void setJournal(String t) {
+		journal = t;
+		journal = journal.replaceAll("'", "");
+	}
+	
+	public String getJournal() {
+		return journal;
 	}
 }
