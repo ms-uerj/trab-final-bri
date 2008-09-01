@@ -3,6 +3,8 @@ package br.ufrj.cos.bri.excel;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +32,23 @@ public class QualisReader {
 
 	}
 	
-	public String getQualis(String proceedingsName){
-		return null;
+	public String getQualis(String articleName){
+		String qualisLevel = null;
+		
+		MysqlConnector conn = new MysqlConnector();
+		conn.connect();
+		ResultSet result = conn.query("SELECT "+COLUMN_NIVEL+" FROM "+TABLE_QUALIS+" WHERE "+COLUMN_TITULO+" = '"+articleName+"'");
+
+		try {
+			while(result.next()){
+				qualisLevel = result.getString(COLUMN_NIVEL);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		conn.disconnect();
+		return qualisLevel;
 	}
 
 	/**
