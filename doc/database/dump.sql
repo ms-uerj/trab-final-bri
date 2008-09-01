@@ -40,6 +40,7 @@ CREATE TABLE ARTICLE
  title varchar(255),
  journal varchar(255),
  year varchar(30),
+ qualis char(3) default '',
  content text,
  primary key (id),
  link varchar(255),
@@ -151,5 +152,6 @@ CREATE TABLE QUALIS (
   title text,
   qualis text,
   circulation text,
-  primary key (id)
-);
+  primary key (id),
+  FULLTEXT (title)
+) engine=MyISAM;
