@@ -37,7 +37,7 @@ FULLTEXT (name)
 CREATE TABLE ARTICLE
 (
  id int unsigned not null auto_increment,
- title varchar(255),
+ title varchar(512),
  journal varchar(255),
  year varchar(30),
  qualis char(3) default '',
@@ -77,7 +77,7 @@ CREATE TABLE INCOLLECTION
 CREATE TABLE PROCEEDINGS
 (
  id int unsigned not null auto_increment,
- title varchar(255),
+ title varchar(512),
  year varchar(30),
  qualis char(3) default '',
  primary key (id),
