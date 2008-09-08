@@ -14,18 +14,33 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import br.ufrj.cos.bri.report.JournalByPerson;
 import br.ufrj.cos.bri.report.Person;
+import br.ufrj.cos.bri.report.ProceedingsByPerson;
 
 public class GUI {
 	private static DefaultListModel listModel;
+	private static DefaultListModel proceedingsModel;
+	private static DefaultListModel journalsModel;
 	private static Person person = new Person();
+	private static ProceedingsByPerson procPerson = new ProceedingsByPerson();
+	private static JournalByPerson journalPerson = new JournalByPerson();
 	private static JTextField searchField=null;
 	private static JList list=null;
 	private static JScrollPane listScroller=null;
+	private static JTabbedPane reportTab=null;
+	private static ListSelectionListener listener=null;
+	
+	private static final int PERSON_BY_PROC = 0;
+	private static final int PERSON_BY_JOURNAL = 1;
 	
 	private static void createAndShowGUI() {
         //Create and set up the window.
@@ -83,8 +98,18 @@ public class GUI {
         
         list = new JList(listModel); //data has type Object[]
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL);
+        list.setLayoutOrientation(JList.VERTICAL);        
         list.setVisibleRowCount(-1);
+        listener = new ListSelectionListener() {
+        	public void valueChanged(ListSelectionEvent e) {
+        		if (e.getValueIsAdjusting() == false) {
+        			showProceedings((String)list.getSelectedValue());
+        			showJournals((String)list.getSelectedValue());
+        		}
+        	}
+        };
+        
+        list.addListSelectionListener(listener);
         listScroller = new JScrollPane(list);
         listScroller.setPreferredSize(new Dimension(250, 600));
         
@@ -93,7 +118,38 @@ public class GUI {
         c.gridy = 1;
         
         frame.getContentPane().add(listScroller, c);
+        
+        reportTab = new JTabbedPane();
+        
+        JPanel personByProceedingsPanel = new JPanel();  
+        proceedingsModel = new DefaultListModel();
+        JList proceedings = new JList(proceedingsModel);
+        proceedings.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        proceedings.setLayoutOrientation(JList.VERTICAL);
+        proceedings.setVisibleRowCount(-1);
+        JScrollPane procScroll = new JScrollPane(proceedings);
+        procScroll.setPreferredSize(new Dimension(600, 600));
+        personByProceedingsPanel.add(procScroll);
+        reportTab.addTab("Conferências Publicadas", null, personByProceedingsPanel, "Conferências onde o autor publicou");
+        
+        JPanel personByJournalsPanel = new JPanel();  
+        journalsModel = new DefaultListModel();
+        JList journals = new JList(journalsModel);
+        journals.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        journals.setLayoutOrientation(JList.VERTICAL);
+        journals.setVisibleRowCount(-1);
+        JScrollPane journalScroll = new JScrollPane(journals);
+        journalScroll.setPreferredSize(new Dimension(600, 600));
+        personByJournalsPanel.add(journalScroll);
+        reportTab.addTab("Periódicos Publicados", null, personByJournalsPanel, "Periódicos onde o autor publicou");
+        
+        
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 1;
+        c.gridy = 1;
+        frame.getContentPane().add(reportTab, c);
 
+        
         //Display the window.
         frame.pack();
         frame.setVisible(true);
@@ -102,6 +158,8 @@ public class GUI {
 	private static void populateModel() {
 		
 		if(searchField.getText().length()==0) {
+			System.out.println("None!");
+			list.removeSelectionInterval(list.getSelectedIndex(), list.getSelectedIndex());
 			return;
 		}
 		
@@ -111,7 +169,26 @@ public class GUI {
 		for(String author : authors) {
 			listModel.addElement(author);
 		}
+	}
+	
+	private static void showProceedings(String author) {
+		Vector<String> procs = procPerson.listProceedings(author);
 		
+		proceedingsModel.removeAllElements();
+		
+		for(String proc : procs) {
+			proceedingsModel.addElement(proc);
+		}
+	}
+	
+	private static void showJournals(String author) {
+		Vector<String> journals = journalPerson.listJournals(author);
+		
+		journalsModel.removeAllElements();
+		
+		for(String proc : journals) {
+			journalsModel.addElement(proc);
+		}
 	}
 	
 	public static void main(String[] args) {
