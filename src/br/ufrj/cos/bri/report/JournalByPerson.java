@@ -39,6 +39,10 @@ public class JournalByPerson {
 					String pname = "("+journalsReg.getString("times")+") "+journalsReg.getString("journal");
 					journals.add(pname);
 				}
+				
+				if(journals.size() == 0) {
+					journals.add("Nenhuma publicação em periódico encontrada.");
+				}
 			}
 			else {
 				System.out.println("Autor "+name+" não encontrado.");
