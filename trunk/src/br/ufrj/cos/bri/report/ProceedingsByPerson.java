@@ -21,7 +21,9 @@ public class ProceedingsByPerson {
 		db.connect();
 	}
 	
-	public void listProceedings(String name) {
+	public Vector<String> listProceedings(String name) {
+		Vector<String> procs = new Vector<String>();
+		
 		String query = new String("SELECT id FROM author WHERE name="+"\'"+name+"\'");
 		
 		ResultSet set = db.query(query);
@@ -30,12 +32,12 @@ public class ProceedingsByPerson {
 		try {
 			if(set.next()) {
 				idauthor = set.getInt("id");
-				query = new String("SELECT distinct a.title FROM proceedings a, inproceedings b, inproceedings_author c WHERE a.id=b.id_proceedings AND b.id=c.id_inproceedings AND c.id_author="+"\'"+idauthor+"\'");
+				query = new String("SELECT distinct a.title FROM proceedings a, inproceedings b, inproceedings_author c WHERE a.id=b.id_proceedings AND b.id=c.id_inproceedings AND c.id_author="+"\'"+idauthor+"\' ORDER BY a.title ASC");
 				ResultSet proceedings = db.query(query);
 				
 				while(proceedings.next()) {
 					String pname = proceedings.getString("title");
-					System.out.println(pname);
+					procs.add(pname);
 				}
 			}
 			else {
@@ -44,6 +46,8 @@ public class ProceedingsByPerson {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return procs;
 	}
 	
 	public void listProceedings(Vector<String> names) {
