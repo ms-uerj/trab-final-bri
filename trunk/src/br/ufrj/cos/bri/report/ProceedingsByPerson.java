@@ -39,6 +39,11 @@ public class ProceedingsByPerson {
 					String pname = proceedings.getString("title");
 					procs.add(pname);
 				}
+				
+				if(procs.size() == 0) {
+					procs.add("Nenhuma publicação em conferência encontrada.");
+				}
+				
 			}
 			else {
 				System.out.println("Author "+name+" não encontrado.");

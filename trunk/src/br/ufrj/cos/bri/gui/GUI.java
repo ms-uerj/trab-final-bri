@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
@@ -22,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import br.ufrj.cos.bri.report.AuthorCoAuthor;
 import br.ufrj.cos.bri.report.JournalByPerson;
 import br.ufrj.cos.bri.report.Person;
 import br.ufrj.cos.bri.report.ProceedingsByPerson;
@@ -30,9 +33,11 @@ public class GUI {
 	private static DefaultListModel listModel;
 	private static DefaultListModel proceedingsModel;
 	private static DefaultListModel journalsModel;
+	private static DefaultListModel coauthorsModel;
 	private static Person person = new Person();
 	private static ProceedingsByPerson procPerson = new ProceedingsByPerson();
 	private static JournalByPerson journalPerson = new JournalByPerson();
+	private static AuthorCoAuthor authorCoauthor = new AuthorCoAuthor();
 	private static JTextField searchField=null;
 	private static JList list=null;
 	private static JScrollPane listScroller=null;
@@ -105,6 +110,7 @@ public class GUI {
         		if (e.getValueIsAdjusting() == false) {
         			showProceedings((String)list.getSelectedValue());
         			showJournals((String)list.getSelectedValue());
+        			showCoauthors((String)list.getSelectedValue());
         		}
         	}
         };
@@ -130,7 +136,7 @@ public class GUI {
         JScrollPane procScroll = new JScrollPane(proceedings);
         procScroll.setPreferredSize(new Dimension(600, 600));
         personByProceedingsPanel.add(procScroll);
-        reportTab.addTab("Conferências Publicadas", null, personByProceedingsPanel, "Conferências onde o autor publicou");
+        reportTab.addTab("Publicações em Conferências", null, personByProceedingsPanel, "Conferências onde o autor publicou");
         
         JPanel personByJournalsPanel = new JPanel();  
         journalsModel = new DefaultListModel();
@@ -141,7 +147,18 @@ public class GUI {
         JScrollPane journalScroll = new JScrollPane(journals);
         journalScroll.setPreferredSize(new Dimension(600, 600));
         personByJournalsPanel.add(journalScroll);
-        reportTab.addTab("Periódicos Publicados", null, personByJournalsPanel, "Periódicos onde o autor publicou");
+        reportTab.addTab("Publicações em Periódicos", null, personByJournalsPanel, "Periódicos onde o autor publicou");
+        
+        JPanel personByCoauthorPanel = new JPanel();  
+        coauthorsModel = new DefaultListModel();
+        JList coauthors = new JList(coauthorsModel);
+        coauthors.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        coauthors.setLayoutOrientation(JList.VERTICAL);
+        coauthors.setVisibleRowCount(-1);
+        JScrollPane coauthorScroll = new JScrollPane(coauthors);
+        coauthorScroll.setPreferredSize(new Dimension(600, 600));
+        personByCoauthorPanel.add(coauthorScroll);
+        reportTab.addTab("Co-autores relacionados", null, personByCoauthorPanel, "Lista de Co-autores e Frequencia");
         
         
         c.fill = GridBagConstraints.BOTH;
@@ -188,6 +205,19 @@ public class GUI {
 		
 		for(String proc : journals) {
 			journalsModel.addElement(proc);
+		}
+	}
+	
+	private static void showCoauthors(String author) {
+		Map<String,Integer> coauthors = authorCoauthor.listCoAuthors(author);
+		
+		coauthorsModel.removeAllElements();
+		
+		Iterator<String> c = coauthors.keySet().iterator();
+		
+		while(c.hasNext()) {
+			String coauthor = c.next();
+			coauthorsModel.addElement("("+coauthors.get(coauthor)+") "+coauthor);
 		}
 	}
 	
