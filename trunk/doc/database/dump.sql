@@ -80,6 +80,7 @@ CREATE TABLE PROCEEDINGS
  title varchar(512),
  year varchar(30),
  qualis char(3) default '',
+ ref varchar(128) not null,
  primary key (id),
  FULLTEXT (title,year)
 ) engine=MyISAM;

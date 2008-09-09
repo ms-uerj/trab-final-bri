@@ -23,6 +23,7 @@ public class LeitorXML extends DefaultHandler {
 	private String localLink = new String();
 	private String localAuthor = new String();
 	private String localJournal = new String();
+	private String localCrossref = new String();
 	
 	/** PARSER DBLP */
 	private boolean inTitle=false;
@@ -34,6 +35,7 @@ public class LeitorXML extends DefaultHandler {
     private boolean inArticle=false;
     private boolean inJournal=false;
     private boolean inProceedings=false;
+    private boolean inCrossref=false;
     private RegistroDBLP registroDBLP=null;
 	
 	public LeitorXML(String arquivo) {
@@ -59,22 +61,22 @@ public class LeitorXML extends DefaultHandler {
 	
 	public void startElement (String uri, String localName, String qName, Attributes atts) {
 		
-//		if(qName.equals("inproceedings")) {
-//			inInProceedings = true;
-//			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.INPROCEEDINGS);
-//			String key = atts.getValue("key");
-//			String mdate = atts.getValue("mdate");
-//			registroDBLP.setKey(key);
-//			registroDBLP.setMdate(mdate);
-//		}
-		if(qName.equals("article")) {
-			inArticle=true;
-			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.ARTICLE);
+		if(qName.equals("inproceedings")) {
+			inInProceedings = true;
+			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.INPROCEEDINGS);
 			String key = atts.getValue("key");
 			String mdate = atts.getValue("mdate");
 			registroDBLP.setKey(key);
 			registroDBLP.setMdate(mdate);
 		}
+//		if(qName.equals("article")) {
+//			inArticle=true;
+//			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.ARTICLE);
+//			String key = atts.getValue("key");
+//			String mdate = atts.getValue("mdate");
+//			registroDBLP.setKey(key);
+//			registroDBLP.setMdate(mdate);
+//		}
 //		if(qName.equals("proceedings")) {
 //			inProceedings=true;
 //			registroDBLP.setDataType(RegistroDBLP.DBLP_DATA.PROCEEDINGS);
@@ -100,6 +102,9 @@ public class LeitorXML extends DefaultHandler {
 		}
 		else if(qName.equals("journal") && (inInProceedings||inArticle||inProceedings)) {
 			inJournal = true;
+		}
+		else if(qName.equals("crossref") && (inInProceedings||inArticle||inProceedings)) {
+			inCrossref = true;
 		}
 	}
 	
@@ -142,6 +147,10 @@ public class LeitorXML extends DefaultHandler {
 			inJournal = false;
 			localJournal="";
 		}
+		else if(qName.equals("crossref") && inCrossref) {
+			inCrossref = false;
+			localCrossref="";
+		}
 
 	}
 	
@@ -169,6 +178,10 @@ public class LeitorXML extends DefaultHandler {
 		else if(inJournal) {
 			localJournal += new String(ch,start,length);
 			registroDBLP.setJournal(localJournal);
+		}
+		else if(inCrossref) {
+			localCrossref += new String(ch,start,length);
+			registroDBLP.setCrossref(localCrossref);
 		}
 		
 	}

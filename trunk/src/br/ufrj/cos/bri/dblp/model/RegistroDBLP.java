@@ -18,6 +18,7 @@ public class RegistroDBLP extends Registro {
 	private String booktitle;
 	private String link;
 	private String journal;
+	private String crossref;
 	
 	public void print() {
 		System.out.println("[TYPE="+current.toString()+", "+
@@ -38,6 +39,7 @@ public class RegistroDBLP extends Registro {
 	public void setKey(String k) {
 		key = k;
 		key = key.replaceAll("'", "");
+		key = key.replaceAll("/", "\\/");
 	}
 	
 	public String getKey() {
@@ -112,5 +114,13 @@ public class RegistroDBLP extends Registro {
 	
 	public String getJournal() {
 		return journal;
+	}
+	public void setCrossref(String t) {
+		crossref = t;
+		crossref = crossref.replaceAll("'", "");
+	}
+	
+	public String getCrossref() {
+		return crossref;
 	}
 }
