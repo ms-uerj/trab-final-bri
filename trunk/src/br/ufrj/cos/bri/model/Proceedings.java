@@ -19,7 +19,7 @@ public class Proceedings {
 	
 	public int compareTo(Object obj){
 		
-		return count-((Proceedings)obj).count;
+		return ((Proceedings)obj).count-count;
 	}
 
 	public int getId() {

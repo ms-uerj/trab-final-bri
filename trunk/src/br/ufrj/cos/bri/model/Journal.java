@@ -16,7 +16,7 @@ public class Journal {
 	
 	public int compareTo(Object obj){
 		
-		return count-((Journal)obj).count;
+		return ((Journal)obj).count-count;
 	}
 
 	public int getId() {
