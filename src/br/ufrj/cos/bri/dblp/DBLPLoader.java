@@ -71,7 +71,7 @@ public class DBLPLoader implements InteressadoRegistro {
 	
 	private int gravaRegistroInProceedings(RegistroDBLP registro) {
 		
-		String query = new String("SELECT id FROM proceedings WHERE title="+"\'"+registro.getTitle()+"\'");
+		String query = new String("SELECT id FROM proceedings WHERE ref="+"\'"+registro.getCrossref()+"\'");
 		
 		ResultSet set = db.query(query);
 		
@@ -140,8 +140,8 @@ public class DBLPLoader implements InteressadoRegistro {
 	
 	private int gravaRegistroProceedings(RegistroDBLP registro) {
 		
-		String query = new String("INSERT INTO proceedings (title, year) VALUES ("+
-				"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\');");
+		String query = new String("INSERT INTO proceedings (title, year, ref) VALUES ("+
+				"\'"+registro.getTitle()+"\',\'"+registro.getYear()+"\',\'"+registro.getKey()+"\');");
 		
 		db.exec(query);
 		

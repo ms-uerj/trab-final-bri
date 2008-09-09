@@ -83,7 +83,6 @@ public class GUI {
         	
             /** Handle the key-released event from the text field. */
             public void keyReleased(KeyEvent e) {
-            	System.out.println(searchField.getText());
                 populateModel();
             }
         });
@@ -95,7 +94,6 @@ public class GUI {
         c.gridy = 0;
         c.insets = new Insets(7,8,0,0);
 
-        
         frame.getContentPane().add(searchField, c);
         
         listModel = new DefaultListModel();
