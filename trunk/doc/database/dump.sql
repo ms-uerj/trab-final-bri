@@ -156,3 +156,10 @@ CREATE TABLE QUALIS (
   primary key (id),
   FULLTEXT (title)
 ) engine=MyISAM;
+
+CREATE TABLE JOURNALBYPROC
+(
+proceeding varchar(512) not null,
+journal varchar(512) not null,
+citecount int
+) engine=MyISAM;

@@ -11,7 +11,7 @@ public class Journal {
 	public Journal(int id, String title){
 		this.id = id;
 		this.title = title;
-		count = 0;
+		count = 1;
 	}
 	
 	public int compareTo(Object obj){
