@@ -257,16 +257,16 @@ public class GUI {
 	}
 	
 	private static void showJournalsCitedByProceedings(String proceedings) {
-		List<br.ufrj.cos.bri.model.Journal> journals = journalByProceedings.listRankedJournalCitedByProceedings(proceedings);
-		
-		journalsModel.removeAllElements();
-		
-		Iterator<br.ufrj.cos.bri.model.Journal> c = journals.iterator();
-		
-		while(c.hasNext()) {
-			br.ufrj.cos.bri.model.Journal journal = c.next();
-			coauthorsModel.addElement(journal.getTitle());
-		}
+//		List<br.ufrj.cos.bri.model.Journal> journals = journalByProceedings.listRankedJournalCitedByProceedings(proceedings);
+//		
+//		journalsModel.removeAllElements();
+//		
+//		Iterator<br.ufrj.cos.bri.model.Journal> c = journals.iterator();
+//		
+//		while(c.hasNext()) {
+//			br.ufrj.cos.bri.model.Journal journal = c.next();
+//			coauthorsModel.addElement(journal.getTitle());
+//		}
 	}
 	
 	private static void showProceedingsCitedByJournal(String journal) {
